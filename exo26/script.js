@@ -1,72 +1,52 @@
-let myDogs = [
+let dogs = [
     {
-        name: "Rantanplan",
-        breed: "Berger texan",
-        age: 7
+        name: "Amy",
+        breed: "Border Collie",
+        age: 11
     },
     {
-        name: "Rex",
-        breed: "Berger allemand",
-        age: 5
+        name: "Roxy",
+        breed: "Border Collie",
+        age: 8
     }
 ];
 
-// Récupération des éléments DOM
-const select = document.getElementById('dog-select');
-const btn = document.getElementById('btn-submit');
-const output = document.getElementById('selectOutput');
-
-// Fonction pour mettre à jour le menu déroulant
-const refreshDogSelect = () => {
-    select.innerHTML = '<option value="0">Sélectionnez un chien</option>';
-    myDogs.forEach((chien, index) => {
-        let newOption = document.createElement('option');
-        newOption.value = index + 1;
-        newOption.textContent = chien.name;
-        select.appendChild(newOption);
+// Menu déroulant
+function populateDogSelect() {
+    const select = document.getElementById('dog-select');
+    select.innerHTML = '<option value="0">Sélectionnez un chien</option>'; // Réinitialiser les options
+    dogs.forEach((dog, index) => {
+        let option = document.createElement('option');
+        option.value = index;
+        option.textContent = dog.name;
+        select.appendChild(option);
     });
-};
+}
 
-// Événement pour afficher les détails du chien sélectionné
-select.addEventListener("change", () => {
-    let dogId = select.value - 1;
-    if (dogId >= 0 && dogId < myDogs.length) {
-        let dog = myDogs[dogId];
-        output.innerHTML = `
-            <h5>Détails du Chien</h5>
-            <p>ID : ${dogId + 1}</p>
-            <p>Nom : ${dog.name}</p>
-            <p>Âge : ${dog.age} ans</p>
-            <p>Race : ${dog.breed}</p>
-        `;
+// Détails chien
+document.getElementById('dog-select').addEventListener('change', function() {
+    const selectedDogIndex = this.value;
+    const output = document.getElementById('selectOutput');
+    if (selectedDogIndex > 0) {
+        const dog = dogs[selectedDogIndex];
+        output.innerHTML = `<p>Nom: ${dog.name}</p><p>Race: ${dog.breed}</p><p>Âge: ${dog.age} ans</p>`;
     } else {
-        output.textContent = "";
+        output.innerHTML = '';
     }
 });
 
-// Événement pour ajouter un nouveau chien
-btn.addEventListener("click", () => {
-    let dogName = document.getElementById("dog-name").value;
-    let dogBreed = document.getElementById("dog-breed").value;
-    let dogAge = parseInt(document.getElementById("dog-age").value, 10);
+// Nouveau chien
+document.getElementById('btn-submit').addEventListener('click', function(event) {
+    event.preventDefault();
+    const name = document.getElementById('dog-name').value;
+    const breed = document.getElementById('dog-breed').value;
+    const age = document.getElementById('dog-age').value;
 
-    if (dogName && dogBreed && !isNaN(dogAge)) {
-        myDogs.push({
-            name: dogName,
-            breed: dogBreed,
-            age: dogAge
-        });
-
-        // Réinitialisation du formulaire
-        document.getElementById("dog-name").value = "";
-        document.getElementById("dog-breed").value = "";
-        document.getElementById("dog-age").value = "";
-
-        // Mise à jour du menu déroulant
-        refreshDogSelect();
-    } else {
-        alert("Veuillez entrer des informations valides pour tous les champs.");
+    if (name && breed && age) {
+        dogs.push({ name, breed, age: parseInt(age) });
+        populateDogSelect();
     }
 });
 
-refreshDogSelect();
+// Initialiser
+populateDogSelect();
